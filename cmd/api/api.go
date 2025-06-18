@@ -7,14 +7,24 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/nikkbh/social-app/internal/store"
 )
 
 type application struct {
 	config config
+	store  store.Storage
 }
 
 type config struct {
 	addr string
+	db   dbConfig
+}
+
+type dbConfig struct {
+	addr         string
+	maxOpenConns int
+	maxIdleConns int
+	maxIdleTime  string
 }
 
 func (app *application) mount() http.Handler {
@@ -28,7 +38,7 @@ func (app *application) mount() http.Handler {
 
 	// health
 	r.Route("/v1", func(r chi.Router) {
-		r.Get("/healthify", app.healthCheckHandler)
+		r.Get("/health", app.healthCheckHandler)
 	})
 	// posts
 

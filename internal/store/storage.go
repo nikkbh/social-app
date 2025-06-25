@@ -7,13 +7,16 @@ import (
 )
 
 var (
-	ErrNotFound = errors.New("resource not found")
+	ErrNotFound     = errors.New("resource not found")
+	ErrDeleteFailed = errors.New("delete resource failed")
 )
 
 type Storage struct {
 	Posts interface {
 		Create(context.Context, *Post) error
 		GetById(context.Context, int64) (*Post, error)
+		DeletePostById(context.Context, int64) error
+		Update(context.Context, *Post) error
 	}
 	Users interface {
 		Create(context.Context, *User) error

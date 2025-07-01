@@ -12,6 +12,9 @@ migrate-up:
 migrate-down:
     @migrate --path ./cmd/migrate/migrations --database $DB_ADDR down
 
+docker-up:
+    @ "/C/Program Files/Docker/Docker/Docker Desktop.exe" &
+
 db-up:
     @docker start postgres-db
 

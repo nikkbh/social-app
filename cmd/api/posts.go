@@ -22,6 +22,20 @@ type ContentPostsPayload struct {
 	Tags    []string `json:"tags"`
 }
 
+// CreatePost godoc
+//
+//	@Summary		Creates a post
+//	@Description	Creates a post
+//	@Tags			posts
+//	@Accept			json
+//	@Produce		json
+//	@Param			RequestPayload	body		ContentPostsPayload	true	"Request Body"
+//	@Success		200				{string}	string				"Post created"
+//	@Failure		400				{object}	error				"Post payload missing/invalid"
+//	@Failure		404				{object}	error
+//	@Failure		500				{object}	error
+//	@Security		ApiKeyAuth
+//	@Router			/posts [post]
 func (app *application) createPostHandler(w http.ResponseWriter, r *http.Request) {
 	var payload ContentPostsPayload
 	if err := readJSON(w, r, &payload); err != nil {
@@ -54,6 +68,19 @@ func (app *application) createPostHandler(w http.ResponseWriter, r *http.Request
 	}
 }
 
+// GetPost godoc
+//
+//	@Summary		Fetches a single post
+//	@Description	Fetches a post by ID
+//	@Tags			posts
+//	@Accept			json
+//	@Produce		json
+//	@Param			PostID	path		int	true	"Post ID"
+//	@Success		200		{object}	store.Post
+//	@Failure		500		{object}	error
+//	@Failure		404		{object}	error	"Post not found"
+//	@Security		ApiKeyAuth
+//	@Router			/posts/{postID} [get]
 func (app *application) getPostHandler(w http.ResponseWriter, r *http.Request) {
 	post := getPostFromCtx(r)
 
@@ -71,6 +98,20 @@ func (app *application) getPostHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// DeletePost godoc
+//
+//	@Summary		Deletes a post
+//	@Description	Deeltes a post by ID
+//	@Tags			posts
+//	@Accept			json
+//	@Produce		json
+//	@Param			PostID	path		int		true	"Post ID"
+//	@Success		204		{object}	string	"Post Deleted successfully!"
+//	@Failure		500		{object}	error
+//	@Failure		400		{object}	error
+//	@Failure		404		{object}	error	"Post not found"
+//	@Security		ApiKeyAuth
+//	@Router			/posts/{postID} [delete]
 func (app *application) deletePostHandler(w http.ResponseWriter, r *http.Request) {
 	postId := chi.URLParam(r, "postId")
 	id, err := strconv.ParseInt(postId, 10, 64)
@@ -101,6 +142,21 @@ type UpdatePayload struct {
 	Content *string `json:"content"  validate:"omitempty,max=1000"`
 }
 
+// UpdatePost godoc
+//
+//	@Summary		Updates a post
+//	@Description	Updates a post by ID
+//	@Tags			posts
+//	@Accept			json
+//	@Produce		json
+//	@Param			PostID			path		int				true	"Post ID"
+//	@Param			RequestPayload	body		UpdatePayload	true	"Request Body"
+//	@Success		200				{object}	string			"Post updated successfully!"
+//	@Failure		500				{object}	error
+//	@Failure		400				{object}	error
+//	@Failure		404				{object}	error	"Post not found"
+//	@Security		ApiKeyAuth
+//	@Router			/posts/{postID} [put]
 func (app *application) updatePostHandler(w http.ResponseWriter, r *http.Request) {
 	post := getPostFromCtx(r)
 
@@ -141,6 +197,21 @@ type CommentPayload struct {
 	Content string `json:"content" validate:"required,max=250"`
 }
 
+// CreateComment godoc
+//
+//	@Summary		Creates a comment
+//	@Description	Creates a comment under a post
+//	@Tags			posts
+//	@Accept			json
+//	@Produce		json
+//	@Param			PostID			path		int				true	"Post ID"
+//	@Param			RequestPayload	body		CommentPayload	true	"Request Body"
+//	@Success		200				{string}	string			"Comment created"
+//	@Failure		400				{object}	error			"Comment payload missing/invalid"
+//	@Failure		404				{object}	error			"Post not found"
+//	@Failure		500				{object}	error
+//	@Security		ApiKeyAuth
+//	@Router			/posts/{postID}/comments [post]
 func (app *application) createCommentHandler(w http.ResponseWriter, r *http.Request) {
 	post := getPostFromCtx(r)
 

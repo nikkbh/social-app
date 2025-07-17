@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS invitations (
+    user_id BIGINT NOT NULL,
+    token BYTEA NOT NULL PRIMARY KEY
+);

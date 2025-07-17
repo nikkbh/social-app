@@ -1,6 +1,8 @@
 package main
 
 import (
+	"time"
+
 	"github.com/nikkbh/social-app/internal/db"
 	"github.com/nikkbh/social-app/internal/env"
 	"github.com/nikkbh/social-app/internal/store"
@@ -38,6 +40,9 @@ func main() {
 			maxIdleTime:  env.GetString("DB_MAX_IDLE_TIME", "15m"),
 		},
 		env: env.GetString("ENV", "development"),
+		mail: mailConfig{
+			exp: time.Hour * 24 * 3,
+		},
 	}
 
 	// Logger

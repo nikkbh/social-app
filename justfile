@@ -12,6 +12,9 @@ migrate-up:
 migrate-down:
     @migrate --path ./cmd/migrate/migrations --database $DB_ADDR down
 
+migrate-force version:
+    @migrate --path ./cmd/migrate/migrations --database $DB_ADDR force {{version}}
+
 docker-up:
     @ "/C/Program Files/Docker/Docker/Docker Desktop.exe" &
 

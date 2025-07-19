@@ -78,7 +78,7 @@ func (app *application) followUserHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	if err := app.jsonResponse(w, http.StatusNoContent, fmt.Sprintf("followed user with ID: %d", followerUser.ID)); err != nil {
+	if err := app.jsonResponse(w, http.StatusOK, fmt.Sprintf("followed user with ID: %d", followerUser.ID)); err != nil {
 		app.internalServerError(w, r, err)
 		return
 	}
@@ -113,10 +113,39 @@ func (app *application) unfollowUserHandler(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	if err := app.jsonResponse(w, http.StatusNoContent, fmt.Sprintf("unfollowed user with ID: %d", followerUser.ID)); err != nil {
+	if err := app.jsonResponse(w, http.StatusOK, fmt.Sprintf("unfollowed user with ID: %d", followerUser.ID)); err != nil {
 		app.internalServerError(w, r, err)
 		return
 	}
+}
+
+// ActivateUser godoc
+//
+//	@Summary		Activates/Registers a user
+//	@Description	Activates/Registers a user
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Param			token	path		string	true	"Invitation Token"
+//	@Success		204		{string}	string	"User activated"
+//	@Failure		404		{object}	error
+//	@Failure		500		{object}	error
+//	@Security		ApiKeyAuth
+//	@Router			/users/activate/{token} [put]
+func (app *application) activateUserHandler(w http.ResponseWriter, r *http.Request) {
+	token := chi.URLParam(r, "token")
+
+	err := app.store.Users.Activate(r.Context(), token)
+	if err != nil {
+		switch err {
+		case store.ErrNotFound:
+			app.badRequestResponse(w, r, err)
+		default:
+			app.internalServerError(w, r, err)
+		}
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func (app *application) userContextMiddleware(next http.Handler) http.Handler {

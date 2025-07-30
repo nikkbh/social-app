@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"embed"
 	"fmt"
-	"log"
 	"text/template"
 	"time"
 )
@@ -45,13 +44,13 @@ func templateParser(templateFile, path string, data any) (*bytes.Buffer, string,
 // retry executes the provided function up to maxRetries times with exponential backoff.
 // It returns the result of the function or the last error encountered.
 func retry(maxRetries int, fn func() (int, error)) (int, error) {
+	var retryErr error
 	for i := 0; i < maxRetries; i++ {
-		result, err := fn()
-		if err == nil {
+		result, retryErr := fn()
+		if retryErr == nil {
 			return result, nil
 		}
-		log.Printf("Attempt %d/%d failed: %v", i+1, maxRetries, err)
 		time.Sleep(time.Second * time.Duration(i+1)) // exponential backoff
 	}
-	return -1, fmt.Errorf("all %d attempts failed", maxRetries)
+	return -1, fmt.Errorf("all %d retry attempts failed, error: %v", maxRetries, retryErr)
 }

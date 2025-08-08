@@ -48,14 +48,16 @@ func (app *application) createPostHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	ctx := r.Context()
+	user := getUserFromCtx(r)
 
 	post := &store.Post{
 		Title:   payload.Title,
 		Content: payload.Content,
-		UserID:  1,
+		UserID:  user.ID,
 		Tags:    payload.Tags,
 	}
+
+	ctx := r.Context()
 
 	if err := app.store.Posts.Create(ctx, post); err != nil {
 		app.internalServerError(w, r, err)

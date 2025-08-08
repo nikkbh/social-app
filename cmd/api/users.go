@@ -1,8 +1,6 @@
 package main
 
 import (
-	"context"
-	"errors"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -60,15 +58,13 @@ type FollowUser struct {
 //	@Router			/users/{userID}/follow [put]
 func (app *application) followUserHandler(w http.ResponseWriter, r *http.Request) {
 	followerUser := getUserFromCtx(r)
-
-	// TODO: Revert back to auth userID from ctx
-	var payload FollowUser
-	if err := readJSON(w, r, &payload); err != nil {
+	followedID, err := strconv.ParseInt(chi.URLParam(r, "userID"), 10, 64)
+	if err != nil {
 		app.badRequestResponse(w, r, err)
 		return
 	}
 
-	if err := app.store.Followers.Follow(r.Context(), followerUser.ID, payload.UserID); err != nil {
+	if err := app.store.Followers.Follow(r.Context(), followerUser.ID, followedID); err != nil {
 		switch err {
 		case store.ErrConflict:
 			app.conflictResponse(w, r, err)
@@ -101,14 +97,13 @@ func (app *application) followUserHandler(w http.ResponseWriter, r *http.Request
 func (app *application) unfollowUserHandler(w http.ResponseWriter, r *http.Request) {
 	followerUser := getUserFromCtx(r)
 
-	// TODO: Revert back to auth userID from ctx
-	var payload FollowUser
-	if err := readJSON(w, r, &payload); err != nil {
+	unfollowedID, err := strconv.ParseInt(chi.URLParam(r, "userID"), 10, 64)
+	if err != nil {
 		app.badRequestResponse(w, r, err)
 		return
 	}
 
-	if err := app.store.Followers.Unfollow(r.Context(), followerUser.ID, payload.UserID); err != nil {
+	if err := app.store.Followers.Unfollow(r.Context(), followerUser.ID, unfollowedID); err != nil {
 		app.internalServerError(w, r, err)
 		return
 	}
@@ -146,33 +141,6 @@ func (app *application) activateUserHandler(w http.ResponseWriter, r *http.Reque
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)
-}
-
-func (app *application) userContextMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		userId := chi.URLParam(r, "userId")
-		id, err := strconv.ParseInt(userId, 10, 64)
-		if err != nil {
-			app.internalServerError(w, r, err)
-			return
-		}
-
-		ctx := r.Context()
-
-		user, err := app.store.Users.GetById(ctx, id)
-		if err != nil {
-			switch {
-			case errors.Is(err, store.ErrNotFound):
-				app.notFoundResponse(w, r, err)
-			default:
-				app.internalServerError(w, r, err)
-			}
-			return
-		}
-
-		ctx = context.WithValue(ctx, userCtx, user)
-		next.ServeHTTP(w, r.WithContext(ctx))
-	})
 }
 
 func getUserFromCtx(r *http.Request) *store.User {

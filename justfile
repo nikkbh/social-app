@@ -15,7 +15,7 @@ migrate-down:
 migrate-force version:
     @migrate --path ./cmd/migrate/migrations --database $DB_ADDR force {{version}}
 
-docker-up:
+docker:
     @ "/C/Program Files/Docker/Docker/Docker Desktop.exe" &
 
 db-up:

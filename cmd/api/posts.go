@@ -77,12 +77,12 @@ func (app *application) createPostHandler(w http.ResponseWriter, r *http.Request
 //	@Tags			posts
 //	@Accept			json
 //	@Produce		json
-//	@Param			PostID	path		int	true	"Post ID"
-//	@Success		200		{object}	store.Post
-//	@Failure		500		{object}	error
-//	@Failure		404		{object}	error	"Post not found"
+//	@Param			id	path		int	true	"Post ID"
+//	@Success		200	{object}	store.Post
+//	@Failure		500	{object}	error
+//	@Failure		404	{object}	error	"Post not found"
 //	@Security		ApiKeyAuth
-//	@Router			/posts/{postID} [get]
+//	@Router			/posts/{id} [get]
 func (app *application) getPostHandler(w http.ResponseWriter, r *http.Request) {
 	post := getPostFromCtx(r)
 
@@ -107,15 +107,15 @@ func (app *application) getPostHandler(w http.ResponseWriter, r *http.Request) {
 //	@Tags			posts
 //	@Accept			json
 //	@Produce		json
-//	@Param			PostID	path		int		true	"Post ID"
-//	@Success		204		{object}	string	"Post Deleted successfully!"
-//	@Failure		500		{object}	error
-//	@Failure		400		{object}	error
-//	@Failure		404		{object}	error	"Post not found"
+//	@Param			id	path		int		true	"Post ID"
+//	@Success		204	{object}	string	"Post Deleted successfully!"
+//	@Failure		500	{object}	error
+//	@Failure		400	{object}	error
+//	@Failure		404	{object}	error	"Post not found"
 //	@Security		ApiKeyAuth
-//	@Router			/posts/{postID} [delete]
+//	@Router			/posts/{id} [delete]
 func (app *application) deletePostHandler(w http.ResponseWriter, r *http.Request) {
-	postId := chi.URLParam(r, "postID")
+	postId := chi.URLParam(r, "postId")
 	id, err := strconv.ParseInt(postId, 10, 64)
 
 	if err != nil {
@@ -151,14 +151,14 @@ type UpdatePayload struct {
 //	@Tags			posts
 //	@Accept			json
 //	@Produce		json
-//	@Param			postID			path		int				true	"Post ID"
+//	@Param			id				path		int				true	"Post ID"
 //	@Param			RequestPayload	body		UpdatePayload	true	"Request Body"
 //	@Success		200				{object}	string			"Post updated successfully!"
 //	@Failure		500				{object}	error
 //	@Failure		400				{object}	error
 //	@Failure		404				{object}	error	"Post not found"
 //	@Security		ApiKeyAuth
-//	@Router			/posts/{postID} [patch]
+//	@Router			/posts/{id} [patch]
 func (app *application) updatePostHandler(w http.ResponseWriter, r *http.Request) {
 	post := getPostFromCtx(r)
 
@@ -249,7 +249,7 @@ func (app *application) createCommentHandler(w http.ResponseWriter, r *http.Requ
 
 func (app *application) postsContextMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		idParam := chi.URLParam(r, "postID")
+		idParam := chi.URLParam(r, "postId")
 		id, err := strconv.ParseInt(idParam, 10, 64)
 		if err != nil {
 			app.internalServerError(w, r, err)

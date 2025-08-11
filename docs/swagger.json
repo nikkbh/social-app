@@ -187,7 +187,7 @@
                 }
             }
         },
-        "/posts/{postID}": {
+        "/posts/{id}": {
             "get": {
                 "security": [
                     {
@@ -209,7 +209,7 @@
                     {
                         "type": "integer",
                         "description": "Post ID",
-                        "name": "PostID",
+                        "name": "id",
                         "in": "path",
                         "required": true
                     }
@@ -252,7 +252,7 @@
                     {
                         "type": "integer",
                         "description": "Post ID",
-                        "name": "PostID",
+                        "name": "id",
                         "in": "path",
                         "required": true
                     }
@@ -299,7 +299,7 @@
                     {
                         "type": "integer",
                         "description": "Post ID",
-                        "name": "postID",
+                        "name": "id",
                         "in": "path",
                         "required": true
                     },

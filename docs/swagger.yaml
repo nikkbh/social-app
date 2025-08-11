@@ -305,7 +305,7 @@ paths:
       summary: Creates a post
       tags:
       - posts
-  /posts/{postID}:
+  /posts/{id}:
     delete:
       consumes:
       - application/json
@@ -313,7 +313,7 @@ paths:
       parameters:
       - description: Post ID
         in: path
-        name: PostID
+        name: id
         required: true
         type: integer
       produces:
@@ -344,7 +344,7 @@ paths:
       parameters:
       - description: Post ID
         in: path
-        name: PostID
+        name: id
         required: true
         type: integer
       produces:
@@ -372,7 +372,7 @@ paths:
       parameters:
       - description: Post ID
         in: path
-        name: postID
+        name: id
         required: true
         type: integer
       - description: Request Body

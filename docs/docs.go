@@ -194,7 +194,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/posts/{postID}": {
+        "/posts/{id}": {
             "get": {
                 "security": [
                     {
@@ -216,7 +216,7 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "Post ID",
-                        "name": "PostID",
+                        "name": "id",
                         "in": "path",
                         "required": true
                     }
@@ -259,7 +259,7 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "Post ID",
-                        "name": "PostID",
+                        "name": "id",
                         "in": "path",
                         "required": true
                     }
@@ -306,7 +306,7 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "Post ID",
-                        "name": "postID",
+                        "name": "id",
                         "in": "path",
                         "required": true
                     },

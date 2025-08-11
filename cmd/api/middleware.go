@@ -105,7 +105,8 @@ func (app *application) checkPostOwnership(requiredRole string, next http.Handle
 		post := getPostFromCtx(r)
 		user := getUserFromCtx(r)
 
-		if user.ID == post.ID {
+		fmt.Println(user.ID, post.ID)
+		if user.ID == post.UserID {
 			next.ServeHTTP(w, r)
 			return
 		}
@@ -119,6 +120,7 @@ func (app *application) checkPostOwnership(requiredRole string, next http.Handle
 
 		if !allowed {
 			app.forbiddenResponse(w, r)
+			return
 		}
 		next.ServeHTTP(w, r)
 	})

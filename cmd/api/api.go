@@ -94,7 +94,7 @@ func (app *application) mount() http.Handler {
 			r.Use(app.AuthMiddleware)
 			r.Post("/", app.createPostHandler)
 
-			r.Route("/{postID}", func(r chi.Router) {
+			r.Route("/{postId}", func(r chi.Router) {
 				r.Use(app.postsContextMiddleware)
 				r.Get("/", app.getPostHandler)
 

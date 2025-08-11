@@ -30,7 +30,7 @@ type ContentPostsPayload struct {
 //	@Accept			json
 //	@Produce		json
 //	@Param			RequestPayload	body		ContentPostsPayload	true	"Request Body"
-//	@Success		200				{string}	string				"Post created"
+//	@Success		201				{string}	string				"Post created"
 //	@Failure		400				{object}	error				"Post payload missing/invalid"
 //	@Failure		404				{object}	error
 //	@Failure		500				{object}	error
@@ -64,7 +64,7 @@ func (app *application) createPostHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	if err := app.jsonResponse(w, http.StatusOK, post); err != nil {
+	if err := app.jsonResponse(w, http.StatusCreated, post); err != nil {
 		app.internalServerError(w, r, err)
 		return
 	}
@@ -115,7 +115,7 @@ func (app *application) getPostHandler(w http.ResponseWriter, r *http.Request) {
 //	@Security		ApiKeyAuth
 //	@Router			/posts/{postID} [delete]
 func (app *application) deletePostHandler(w http.ResponseWriter, r *http.Request) {
-	postId := chi.URLParam(r, "postId")
+	postId := chi.URLParam(r, "postID")
 	id, err := strconv.ParseInt(postId, 10, 64)
 
 	if err != nil {
@@ -151,14 +151,14 @@ type UpdatePayload struct {
 //	@Tags			posts
 //	@Accept			json
 //	@Produce		json
-//	@Param			PostID			path		int				true	"Post ID"
+//	@Param			postID			path		int				true	"Post ID"
 //	@Param			RequestPayload	body		UpdatePayload	true	"Request Body"
 //	@Success		200				{object}	string			"Post updated successfully!"
 //	@Failure		500				{object}	error
 //	@Failure		400				{object}	error
 //	@Failure		404				{object}	error	"Post not found"
 //	@Security		ApiKeyAuth
-//	@Router			/posts/{postID} [put]
+//	@Router			/posts/{postID} [patch]
 func (app *application) updatePostHandler(w http.ResponseWriter, r *http.Request) {
 	post := getPostFromCtx(r)
 
@@ -249,9 +249,8 @@ func (app *application) createCommentHandler(w http.ResponseWriter, r *http.Requ
 
 func (app *application) postsContextMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		postId := chi.URLParam(r, "postId")
-		id, err := strconv.ParseInt(postId, 10, 64)
-
+		idParam := chi.URLParam(r, "postID")
+		id, err := strconv.ParseInt(idParam, 10, 64)
 		if err != nil {
 			app.internalServerError(w, r, err)
 			return

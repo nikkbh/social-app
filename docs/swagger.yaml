@@ -73,6 +73,10 @@ definitions:
         type: integer
       is_active:
         type: boolean
+      role:
+        $ref: '#/definitions/store.Role'
+      role_id:
+        type: integer
       token:
         type: string
       username:
@@ -149,6 +153,17 @@ definitions:
       version:
         type: integer
     type: object
+  store.Role:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      level:
+        type: integer
+      name:
+        type: string
+    type: object
   store.User:
     properties:
       created_at:
@@ -159,6 +174,10 @@ definitions:
         type: integer
       is_active:
         type: boolean
+      role:
+        $ref: '#/definitions/store.Role'
+      role_id:
+        type: integer
       username:
         type: string
     type: object
@@ -268,7 +287,7 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
+        "201":
           description: Post created
           schema:
             type: string
@@ -346,14 +365,14 @@ paths:
       summary: Fetches a single post
       tags:
       - posts
-    put:
+    patch:
       consumes:
       - application/json
       description: Updates a post by ID
       parameters:
       - description: Post ID
         in: path
-        name: PostID
+        name: postID
         required: true
         type: integer
       - description: Request Body

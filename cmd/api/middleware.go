@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/nikkbh/social-app/internal/store"
 )
 
 func (app *application) AuthMiddleware(next http.Handler) http.Handler {
@@ -97,4 +98,36 @@ func (app *application) BasicAuthMiddleware() func(http.Handler) http.Handler {
 			next.ServeHTTP(w, r)
 		})
 	}
+}
+
+func (app *application) checkPostOwnership(requiredRole string, next http.HandlerFunc) http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		post := getPostFromCtx(r)
+		user := getUserFromCtx(r)
+
+		if user.ID == post.ID {
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		// role precedence
+		allowed, err := app.checkRolePrecendence(r.Context(), user, requiredRole)
+		if err != nil {
+			app.internalServerError(w, r, err)
+			return
+		}
+
+		if !allowed {
+			app.forbiddenResponse(w, r)
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+
+func (app *application) checkRolePrecendence(ctx context.Context, user *store.User, roleName string) (bool, error) {
+	role, err := app.store.Roles.GetByName(ctx, roleName)
+	if err != nil {
+		return false, err
+	}
+	return user.Role.Level >= role.Level, nil
 }

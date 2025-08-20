@@ -3,11 +3,13 @@ package main
 import (
 	"time"
 
+	"github.com/go-redis/redis/v8"
 	"github.com/nikkbh/social-app/internal/auth"
 	"github.com/nikkbh/social-app/internal/db"
 	"github.com/nikkbh/social-app/internal/env"
 	"github.com/nikkbh/social-app/internal/mailer"
 	"github.com/nikkbh/social-app/internal/store"
+	"github.com/nikkbh/social-app/internal/store/cache"
 	"go.uber.org/zap"
 )
 
@@ -64,6 +66,12 @@ func main() {
 				iss:    "gophersocial",
 			},
 		},
+		redisCfg: redisCfg{
+			addr:    env.GetString("REDIS_ADDR", "localhost:6379"),
+			pwd:     env.GetString("REDIS_PW", ""),
+			db:      env.GetInt("REDIS_DB", 0),
+			enabled: env.GetBool("REDIS_ENABLED", false),
+		},
 	}
 
 	// Logger
@@ -84,8 +92,15 @@ func main() {
 	defer db.Close()
 	logger.Info("Database connection pool established")
 
-	store := store.NewStorage(db)
+	// Cache
+	var rdb *redis.Client
+	if cfg.redisCfg.enabled {
+		rdb = cache.NewRedisClient(cfg.redisCfg.addr, cfg.redisCfg.pwd, cfg.redisCfg.db)
+		logger.Info("Redis connection established")
+	}
 
+	store := store.NewStorage(db)
+	cacheStorage := cache.NewRedisStorage(rdb)
 	// mailer := mailer.NewSendgrid(cfg.mail.sendGrid.apiKey, cfg.mail.fromEmail)
 	mailTrap, err := mailer.NewMailTrapClient(cfg.mail.mailTrap.apiKey, cfg.mail.fromEmail)
 	if err != nil {
@@ -97,6 +112,7 @@ func main() {
 	app := &application{
 		config:        cfg,
 		store:         store,
+		cacheStorage:  cacheStorage,
 		logger:        logger,
 		mailer:        mailTrap,
 		authenticator: jwtAuthenticator,

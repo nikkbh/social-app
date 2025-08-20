@@ -24,6 +24,20 @@ db-up:
 db-down:
     @docker stop postgres-db
 
+redis-up:
+    @docker start social-redis
+
+redis-down:
+    @docker stop social-redis
+
+storage-up:
+    @docker start social-redis
+    @docker start postgres-db
+
+storage-down:
+    @docker stop social-redis 
+    @docker stop postgres-db
+
 seed:
     @go run ./cmd/migrate/seed/main.go
 

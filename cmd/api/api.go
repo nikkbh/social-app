@@ -12,8 +12,10 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/cors"
 	"github.com/nikkbh/social-app/docs"
 	"github.com/nikkbh/social-app/internal/auth"
+	"github.com/nikkbh/social-app/internal/env"
 	"github.com/nikkbh/social-app/internal/mailer"
 	"github.com/nikkbh/social-app/internal/ratelimiter"
 	"github.com/nikkbh/social-app/internal/store"
@@ -97,6 +99,16 @@ func (app *application) mount() http.Handler {
 	r.Use(middleware.RealIP)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
+	r.Use(cors.Handler(cors.Options{
+		AllowedOrigins: []string{env.GetString("CORS_ALLOWED_ORIGIN", "http://localhost:5154")},
+		// AllowedOrigins: []string{"https://*", "http://*"},
+		/* AllowOriginFunc:  func(r *http.Request, origin string) bool { return true }, */
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		ExposedHeaders:   []string{"Link"},
+		AllowCredentials: false,
+		MaxAge:           300, // Maximum value not ignored by any of major browsers
+	}))
 	r.Use(app.RateLimiterMiddlware)
 
 	// health

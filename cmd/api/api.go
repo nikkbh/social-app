@@ -15,6 +15,7 @@ import (
 	"github.com/nikkbh/social-app/docs"
 	"github.com/nikkbh/social-app/internal/auth"
 	"github.com/nikkbh/social-app/internal/mailer"
+	"github.com/nikkbh/social-app/internal/ratelimiter"
 	"github.com/nikkbh/social-app/internal/store"
 	"github.com/nikkbh/social-app/internal/store/cache"
 	httpSwagger "github.com/swaggo/http-swagger/v2"
@@ -28,6 +29,7 @@ type application struct {
 	mailer        mailer.Client
 	authenticator auth.Authenticator
 	cacheStorage  cache.Storage
+	rateLimiter   ratelimiter.Limiter
 }
 
 type config struct {
@@ -39,6 +41,7 @@ type config struct {
 	frontendURL string
 	auth        authConfig
 	redisCfg    redisCfg
+	rateLimiter ratelimiter.Config
 }
 
 type redisCfg struct {
@@ -94,6 +97,7 @@ func (app *application) mount() http.Handler {
 	r.Use(middleware.RealIP)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
+	r.Use(app.RateLimiterMiddlware)
 
 	// health
 	r.Route("/v1", func(r chi.Router) {

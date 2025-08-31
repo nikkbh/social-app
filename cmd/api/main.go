@@ -8,6 +8,7 @@ import (
 	"github.com/nikkbh/social-app/internal/db"
 	"github.com/nikkbh/social-app/internal/env"
 	"github.com/nikkbh/social-app/internal/mailer"
+	"github.com/nikkbh/social-app/internal/ratelimiter"
 	"github.com/nikkbh/social-app/internal/store"
 	"github.com/nikkbh/social-app/internal/store/cache"
 	"go.uber.org/zap"
@@ -72,6 +73,11 @@ func main() {
 			db:      env.GetInt("REDIS_DB", 0),
 			enabled: env.GetBool("REDIS_ENABLED", false),
 		},
+		rateLimiter: ratelimiter.Config{
+			RequestPerTimeFrame: env.GetInt("RATE_LIMITER_REQUESTS_COUNT", 20),
+			TimeFrame:           time.Second * 5,
+			Enabled:             env.GetBool("RATE_LIMITER_ENABLED", true),
+		},
 	}
 
 	// Logger
@@ -99,6 +105,9 @@ func main() {
 		logger.Info("Redis connection established")
 	}
 
+	// Rate Limiter
+	rateLimiter := ratelimiter.NewFixedWindowRateLimiter(cfg.rateLimiter.RequestPerTimeFrame, cfg.rateLimiter.TimeFrame)
+
 	store := store.NewStorage(db)
 	cacheStorage := cache.NewRedisStorage(rdb)
 	// mailer := mailer.NewSendgrid(cfg.mail.sendGrid.apiKey, cfg.mail.fromEmail)
@@ -116,6 +125,7 @@ func main() {
 		logger:        logger,
 		mailer:        mailTrap,
 		authenticator: jwtAuthenticator,
+		rateLimiter:   rateLimiter,
 	}
 
 	mux := app.mount()

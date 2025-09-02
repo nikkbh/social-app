@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/nikkbh/social-app/compare/v1.0.0...v1.1.0) (2025-09-02)
+
+
+### Features
+
+* add workflow to automatically update version and release on push ([c2f69d5](https://github.com/nikkbh/social-app/commit/c2f69d5e37b0b5d94b6b32af9e759f9da02ee80a))
+
 ## 1.0.0 (2025-09-02)
 
 

@@ -30,3 +30,12 @@ jobs:
           git add cmd/api/main.go
           git commit -m "Update version to ${{ steps.get_version.outputs.VERSION }}" || echo "No changes to commit"
           git push
+
+      - name: Save version to file
+        run: echo "${{ steps.get_version.outputs.VERSION }}" > version.txt
+
+      - name: Upload version artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-version
+          path: version.txt

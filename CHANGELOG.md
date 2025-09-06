@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/nikkbh/social-app/compare/v1.4.0...v1.5.0) (2025-09-06)
+
+
+### Features
+
+* push both latest and version images ([66ed39f](https://github.com/nikkbh/social-app/commit/66ed39fa0a44151d6df5298c286b99e0d0a9e9a6))
+
 ## [1.4.0](https://github.com/nikkbh/social-app/compare/v1.3.0...v1.4.0) (2025-09-06)
 
 

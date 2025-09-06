@@ -65,3 +65,8 @@ variable "akv_supabase_secret_name" {
   type        = string
   description = "Name of the secret in Key Vault that contains the Supabase access token"
 }
+variable "environment_variables" {
+  type        = map(string)
+  description = "Environment variables for the application"
+  default     = {}
+}

@@ -43,6 +43,7 @@ resource "azurerm_linux_web_app" "web_app" {
       docker_registry_password = azurerm_container_registry.acr.admin_password
     }
   }
+  app_settings = var.environment_variables
 
   tags = var.tags
 }

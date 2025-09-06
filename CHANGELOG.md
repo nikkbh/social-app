@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/nikkbh/social-app/compare/v1.1.0...v1.2.0) (2025-09-06)
+
+
+### Features
+
+* add terraform for IAC and deploy pipelines ([dbb6fad](https://github.com/nikkbh/social-app/commit/dbb6fadacce62f28d3fe2422a92a2b99a8c938a0))
+
 ## [1.1.0](https://github.com/nikkbh/social-app/compare/v1.0.0...v1.1.0) (2025-09-02)
 
 

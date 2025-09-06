@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/nikkbh/social-app/compare/v1.3.0...v1.4.0) (2025-09-06)
+
+
+### Features
+
+* use mailtrap and remove sendgrid commented code ([9f8a556](https://github.com/nikkbh/social-app/commit/9f8a55691897cf4fbe514913fd9c91daabc793b1))
+
 ## [1.3.0](https://github.com/nikkbh/social-app/compare/v1.2.1...v1.3.0) (2025-09-06)
 
 

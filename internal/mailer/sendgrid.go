@@ -53,20 +53,6 @@ func (m *SendGridMailer) Send(templateFile, username, email string, data any, is
 		},
 	})
 
-	// for i := 0; i < maxRetries; i++ {
-	// 	response, err := m.client.Send(message)
-	// 	if err != nil {
-	// 		log.Printf("Failed to send email to %v, attempt %d of %d", email, i+1, maxRetries)
-	// 		log.Printf("Error: %v", err.Error())
-
-	// 		// exponential backoff
-	// 		time.Sleep(time.Second * time.Duration(i+1))
-	// 		continue
-	// 	}
-	// 	log.Printf("Email sent with status code %v", response.StatusCode)
-	// 	return 200, nil
-	// }
-	// return -1, fmt.Errorf("failed to send email after %d attemps", maxRetries)
 	status, err := retry(maxRetries, func() (int, error) {
 		response, err := m.client.Send(message)
 		if err != nil {

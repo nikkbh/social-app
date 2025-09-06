@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/nikkbh/social-app/compare/v1.2.0...v1.2.1) (2025-09-06)
+
+
+### Bug Fixes
+
+* deploy yaml file ([3bb19cd](https://github.com/nikkbh/social-app/commit/3bb19cd98d74f4c47d90b1d0d4bb77dcda62b247))
+
 ## [1.2.0](https://github.com/nikkbh/social-app/compare/v1.1.0...v1.2.0) (2025-09-06)
 
 

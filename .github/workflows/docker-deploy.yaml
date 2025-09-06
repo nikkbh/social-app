@@ -15,16 +15,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download version artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: api-version
-
-      - name: Read version from file
-        id: read_version
+      - name: Extract latest version from CHANGELOG.md
+        id: get_version
         run: |
-          VERSION=$(cat version.txt)
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          VERSION=$(grep -oP '\[\K[0-9]+\.[0-9]+\.[0-9]+' CHANGELOG.md | head -1)
+          echo "::set-output name=VERSION::$VERSION"
 
       - name: Log in to Azure Container Registry
         uses: azure/docker-login@v2
@@ -38,11 +33,11 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ secrets.DOCKER_IMAGE_NAME }}:${{ env.VERSION }}
+          tags: ${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ secrets.DOCKER_IMAGE_NAME }}:${{ steps.get_version.outputs.VERSION }}
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          images: ${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ secrets.DOCKER_IMAGE_NAME }}:${{ env.VERSION }}
+          images: ${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ secrets.DOCKER_IMAGE_NAME }}:${{ steps.get_version.outputs.VERSION }}

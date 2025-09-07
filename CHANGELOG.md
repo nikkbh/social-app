@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/nikkbh/social-app/compare/v1.5.0...v1.6.0) (2025-09-07)
+
+
+### Features
+
+* add write permission to workflow ([6ba4d41](https://github.com/nikkbh/social-app/commit/6ba4d41e3eb5e926121d789a2d3d44f4b708a559))
+
 ## [1.5.0](https://github.com/nikkbh/social-app/compare/v1.4.0...v1.5.0) (2025-09-06)
 
 

@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.7.0](https://github.com/nikkbh/social-app/compare/v1.6.0...v1.7.0) (2025-09-07)
+
+
+### Features
+
+* add write permission to workflow ([bf79a22](https://github.com/nikkbh/social-app/commit/bf79a229151d758abaa1f228d8f4268295f6ef00))
+
+
+### Bug Fixes
+
+* cleanup ddeploy.yaml ([7f73a60](https://github.com/nikkbh/social-app/commit/7f73a602df0129e166d8871621a8687792dafc51))
+
 ## [1.6.0](https://github.com/nikkbh/social-app/compare/v1.5.0...v1.6.0) (2025-09-07)
 
 
